@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		ul,
+		li{
+			list-style: none;
+		}
+		.clearfix:after{
+			content: "";
+			display: block;
+			clear: both;
+		}
+		.carousel-ct{
+			position: relative;
+			width: 500px;
+			height: 300px;
+		}
+		.img-ct{
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+		.img-ct > li{
+			width: 100%;
+			height: 100%;
+			display: none;
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+		.img-ct > li > img{
+/*			width: 500px;
+			height: 300px;*/
+		}
+		.btn{
+			display: block;
+			text-decoration: none;
+			width: 30px;
+			height: 30px;
+			line-height: 30px;
+			text-align: center;
+			background-color: #ccc;
+			color: #fff;
+			font-size: 20px;
+			border-radius: 50%;
+			position: absolute;
+			top: 50%;
+			margin-top: -15px;
+		}
+		.btn-left{
+			left: 10px;
+		}
+		.btn-right{
+			right: 10px;
+		}
+		.nav-ct{
+			position: absolute;
+			bottom: 20px;
+			width: 100%;
+			text-align: center;
+		}
+		.nav{
+			display: inline-block;
+		}
+		.nav > li{
+			width: 20px;
+			height: 6px;
+			border-radius: 4px;
+			background-color: #fff;
+			margin: 5px;
+			float: left;
+		}
+		.nav .nav-active{
+			background-color: #666 !important;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="carousel-ct">
+		<ul class="img-ct">
+			<li><img src="https://unsplash.it/500/300?image=0" alt=""></li>
+			<li><img src="https://unsplash.it/500/300?image=111" alt=""></li>
+			<li><img src="https://unsplash.it/500/300?image=222" alt=""></li>
+			<li><img src="https://unsplash.it/500/300?image=334" alt=""></li>
+		</ul>
+		<a class="btn btn-left" href="#">&lt;</a>
+		<a class="btn btn-right" href="#">&gt;</a>
+		<div class="nav-ct">
+			<ul class="nav clearfix">
+				<li class="nav-active"></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>					
+		</div>
+	</div>
+
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+	<script>
+	var $imgCt = $(".img-ct"),
+	    $preImg = $(".btn-left"),
+	    $nextImg = $(".btn-right"),
+	    $imgNav = $(".nav");
+
+	var $firstImg = $imgCt.children().first(),
+			$lastImg = $imgCt.children().last();
+
+	var currentImgIndex = 0,
+			imgLength = $imgCt.children().length; // imgLength 必须写在“轮播图初始化工作”的代码之前！自行脑补why
+			isAnimate = false;
+
+	// 轮播图的初始化工作：将首图展现
+	$imgCt.children().first().css({"display": "block"});
+
+
+	$nextImg.on("click", function(){
+		imgNext();
+		navNext();
+	})
+
+	$preImg.on("click",function(){
+		imgPre();
+		navPre();
+	})
+
+
+	function imgNext(){
+		if(isAnimate){
+			return;
+		}else{
+			isAnimate = true;
+			currentImgIndex++;
+			$imgCt.children().fadeOut(500);
+			$imgCt.children().eq(currentImgIndex).fadeIn(500,function(){
+				isAnimate = false;
+			});
+			if(currentImgIndex === imgLength){
+				$imgCt.children().eq(0).fadeIn(500, function(){
+					isAnimate = false;
+				});
+				currentImgIndex = 0;
+			}
+		}
+	}
+
+	function imgPre(){
+		if(isAnimate){
+			return;
+		}else{
+			isAnimate = true;
+			currentImgIndex--;
+			$imgCt.children().fadeOut(500);
+			$imgCt.children().eq(currentImgIndex).fadeIn(500,function(){
+				isAnimate = false;
+			});
+			if(currentImgIndex === -1){
+				$imgCt.children().eq(imgLength - 1).fadeIn(500, function(){
+					isAnimate = false;
+				});
+				currentImgIndex = imgLength - 1;
+			}
+		}
+	}
+
+	function navNext(){
+		$imgNav.children().removeClass("nav-active");
+		$imgNav.children().eq(currentImgIndex).addClass("nav-active");
+		// console.log(currentImgIndex + 1);
+		if(currentImgIndex === imgLength){
+			$imgNav.children().eq(0).addClass("nav-active");
+			currentImgIndex = 0;
+		}
+	}
+
+	function navPre(){
+		$imgNav.children().removeClass("nav-active");
+		$imgNav.children().eq(currentImgIndex).addClass("nav-active");
+		// console.log(currentImgIndex + 1);
+		if(currentImgIndex === -1){
+			$imgNav.children().eq(imgLength - 1).addClass("nav-active");
+			currentImgIndex = imgLength - 1;
+		}
+	}
+	</script>
+</body>
+</html>

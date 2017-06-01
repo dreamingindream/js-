@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		ul,
+		li{
+			list-style: none;
+		}
+		.clearfix:after{
+			content: "";
+			display: block;
+			clear: both;
+		}
+		.carousel-ct{
+			position: relative;
+			width: 500px;
+			overflow: hidden;
+		}
+		.img-ct{
+			width: 2000px;
+			/*margin-left: -400px;*/
+		}
+		.img-ct > li{
+			width: 500px;
+			height: 300px;
+			float: left;
+		}
+		.img-ct > li > img{
+			/*width: 500px;*/
+			/*height: 300px;*/
+		}
+		.btn{
+			display: block;
+			text-decoration: none;
+			width: 30px;
+			height: 30px;
+			line-height: 30px;
+			text-align: center;
+			background-color: #ccc;
+			color: #fff;
+			font-size: 20px;
+			border-radius: 50%;
+			position: absolute;
+			top: 50%;
+			margin-top: -15px;
+		}
+		.btn-left{
+			left: 10px;
+		}
+		.btn-right{
+			right: 10px;
+		}
+		.nav-ct{
+			position: absolute;
+			bottom: 20px;
+			width: 100%;
+			text-align: center;
+		}
+		.nav{
+			display: inline-block;
+		}
+		.nav > li{
+			width: 20px;
+			height: 6px;
+			border-radius: 4px;
+			background-color: #fff;
+			margin: 5px;
+			float: left;
+		}
+		.nav .nav-active{
+			background-color: #666 !important;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="carousel-ct">
+		<ul class="img-ct clearfix">
+			<li><img data-index="0" src="https://unsplash.it/500/300?image=0" alt=""></li>
+			<li><img data-index="1" src="https://unsplash.it/500/300?image=111" alt=""></li>
+			<li><img data-index="2" src="https://unsplash.it/500/300?image=222" alt=""></li>
+			<li><img data-index="3" src="https://unsplash.it/500/300?image=334" alt=""></li>
+		</ul>
+		<a class="btn btn-left" href="#">&lt;</a>
+		<a class="btn btn-right" href="#">&gt;</a>
+		<div class="nav-ct">
+			<ul class="nav clearfix">
+				<li class="nav-active"></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>					
+		</div>
+	</div>
+
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+	<script>
+	var $imgCt = $(".img-ct"),
+	    $preImg = $(".btn-left"),
+	    $nextImg = $(".btn-right"),
+	    $imgNav = $(".nav");
+
+	var $firstImg = $imgCt.children().first(),
+			$lastImg = $imgCt.children().last();
+
+	var currentImgIndex = 0,
+			imgLength = $imgCt.children().length; // imgLength 必须写在“轮播图初始化工作”的代码之前！自行脑补why
+			isAnimate = false;
+
+	// 轮播图的初始化工作：将图片组“首尾相接”
+	$imgCt.prepend( $lastImg.clone() );
+	$imgCt.append( $firstImg.clone() );
+	$imgCt.css({
+		"width": ($firstImg.width() * $imgCt.children().length) + "px",
+		"margin-left": "-" + $firstImg.width() + "px"
+	});
+
+	$nextImg.on("click", function(){
+		imgNext();
+		navNext();
+	})
+
+	$preImg.on("click",function(){
+		imgPre();
+		navPre();
+	})
+
+
+	function imgNext(){
+		if(isAnimate){
+			return;
+		}else{
+			isAnimate = true;
+			$imgCt.animate(
+				{"margin-left": "-=500px"},
+				500,
+				function(){
+					currentImgIndex++;
+					if( currentImgIndex === imgLength ){
+						$imgCt.css({"margin-left": "-" + $firstImg.width() + "px"});
+						currentImgIndex = 0;
+					}
+					isAnimate = false;
+			});
+		}
+	}
+
+	function imgPre(){
+		if(isAnimate){
+			return;
+		}else{
+			isAnimate = true;
+			$imgCt.animate(
+				{"margin-left": "+=500px"},
+				500,
+				function(){
+					currentImgIndex--;
+					if( currentImgIndex === -1 ){
+						$imgCt.css({"margin-left": "-" + $firstImg.width()*(imgLength) + "px"});
+						currentImgIndex = imgLength - 1;
+					}
+					isAnimate = false;
+			});
+		}
+	}
+
+	function navNext(){
+		$imgNav.children().removeClass("nav-active");
+		$imgNav.children().eq(currentImgIndex + 1).addClass("nav-active");
+		// console.log(currentImgIndex + 1);
+		if(currentImgIndex + 1 === imgLength){
+			$imgNav.children().eq(0).addClass("nav-active");
+		}
+	}
+
+	function navPre(){
+		$imgNav.children().removeClass("nav-active");
+		$imgNav.children().eq(currentImgIndex - 1).addClass("nav-active");
+		// console.log(currentImgIndex + 1);
+		if(currentImgIndex - 1 === -1){
+			$imgNav.children().eq(imgLength).addClass("nav-active");
+		}
+	}
+	</script>
+</body>
+</html>

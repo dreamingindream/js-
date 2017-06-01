@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		ul,
+		li{
+			list-style: none;
+		}
+		.waterfall-ct{
+			position: relative;
+		}
+		.item{
+			width: 300px;
+			position: absolute;
+			margin: 5px;
+			transition: all 1s;
+		}
+		.num01{
+			height: 300px;
+			background-color: pink;
+		}
+		.num02{
+			height: 500px;
+			background-color: skyblue;
+		}
+		.num03{
+			height: 666px;
+			background-color: red;
+		}
+		.num04{
+			height: 333px;
+			background-color: lightgrey;
+		}
+		.num05{
+			height: 520px;
+			background-color: yellow;
+		}
+		
+	</style>
+</head>
+
+<body>
+	
+		<ul class="waterfall-ct">
+			<li class="item num01">01</li>
+			<li class="item num02">02</li>
+			<li class="item num03">03</li>
+			<li class="item num04">04</li>
+			<li class="item num05">05</li>
+			<li class="item num01">06</li>
+			<li class="item num02">07</li>
+			<li class="item num03">08</li>
+			<li class="item num04">09</li>
+			<li class="item num05">10</li>
+			<li class="item num01">11</li>
+			<li class="item num02">12</li>
+			<li class="item num03">13</li>
+			<li class="item num04">14</li>
+			<li class="item num05">15</li>
+			<li class="item num01">16</li>
+			<li class="item num02">17</li>
+			<li class="item num03">18</li>
+			<li class="item num04">19</li>
+			<li class="item num05">20</li>
+		</ul>
+
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+	<script>
+
+		var waterFallLoad = (function(){
+			function fn(){
+				waterFall();
+				$(window).on("resize", function(){
+					waterFall();
+				})
+			}
+
+			function waterFall(){
+				var colLength = parseInt( $(".waterfall-ct").width() / $(".item").outerWidth(true) );
+				var itemArr = [];
+
+				for(var i = 0; i < colLength; i++){
+					itemArr[i] = 0
+				}
+
+				$(".item").each(function(){
+					var minHeight = Math.min.apply(null, itemArr);
+					var minHeightIndex = itemArr.indexOf(minHeight);
+
+					$(this).css({
+						"top": itemArr[minHeightIndex],
+						"left": $(".item").outerWidth(true) * minHeightIndex
+					});
+
+					itemArr[minHeightIndex] += $(this).outerHeight(true);
+
+				})	
+			}	
+
+			return {
+				init: fn
+			}
+		})()
+
+	  waterFallLoad.init();
+
+	</script>
+</body>
+</html>
